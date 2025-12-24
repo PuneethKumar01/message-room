@@ -19,7 +19,7 @@ const HomePage = () => {
             />}
 
             {action === 'create' && <CreateRoom />}
-            {action === 'join' && <JoinRoom />}
+            {action === 'join' && <JoinRoom setAction={setAction} />}
         </div>
     )
 }

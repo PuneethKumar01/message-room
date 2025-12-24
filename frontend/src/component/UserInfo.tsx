@@ -28,6 +28,7 @@ const UserInfo = ({ name, setName, setAction }: Props) => {
                             type="text"
                             placeholder='Enter your Name'
                             onChange={(e) => setName(e.target.value)}
+                            value={name}
                         />
                     </div>
 
