@@ -47,15 +47,15 @@ const JoinRoom = ({ setAction, name }: Props) => {
         // }
 
         try {
-            const res = await axios.get(`/api/join-room/${finalRoomId}`)
-            console.log(res.data.roomId)
+            // const res = await axios.get(`/api/join-room/${finalRoomId}`)
+            // console.log(res.data.roomId)
 
-            if (!res.data.roomId) {
-                alert("room not found")
-                return
-            }
+            // if (!res.data.roomId) {
+            //     alert("room not found")
+            //     return
+            // }
 
-            navigate(`/room/${res.data.roomId}?name=${encodeURIComponent(name)}`)
+            navigate(`/room/${finalRoomId}?name=${encodeURIComponent(name)}`)
         } catch (error) {
 
         }

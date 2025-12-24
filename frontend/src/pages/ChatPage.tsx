@@ -1,13 +1,10 @@
 import React, { type HtmlHTMLAttributes } from 'react'
-import { useEffect } from 'react'
-import { useState } from 'react'
-import { io } from 'socket.io-client'
+import { useEffect, useState } from 'react'
 import Message from '../component/Message'
 import { Send } from 'lucide-react'
 import { useParams, useSearchParams } from 'react-router-dom'
+import { socket } from '../util/socket'
 
-
-const socket = io("http://localhost:5001")
 
 const App = () => {
 
@@ -17,40 +14,50 @@ const App = () => {
     sender: string;
   }
 
+  const { roomId } = useParams();
   const [searchParams] = useSearchParams()
   const name = searchParams.get("name")
-  console.log(name)
 
-  const { roomId } = useParams();
   const [content, setContent] = useState('')
   const [message, setMessage] = useState<Message[]>([])
-  console.log(name, roomId)
 
   useEffect(() => {
 
-    // if (!room) {
-    //   console.error("error")
-    //   return
-    // }
+    if (!roomId || !name) return
 
-    const handleConnecion = () => {
+    socket.connect()
+
+    const onConnect = () => {
       console.log("connected:", socket.id);
-      console.log(roomId)
       socket.emit("join-room", roomId)
     }
 
-    socket.on("connect", handleConnecion)
-
-    socket.on('receive-message', (msg) => {
+    const onReceviveMessage = (msg: Message) => {
       setMessage((prev) => [...prev, msg])
-      console.log(msg)
-    })
 
-    return () => { socket.off("receive-message") }
-  }, [])
+    }
+
+    socket.on("connect", onConnect)
+
+    socket.on('receive-message', onReceviveMessage)
+
+    return () => {
+      socket.off("connect", onConnect)
+      socket.off("receive-message", onReceviveMessage)
+      socket.disconnect()
+    }
+  }, [roomId, name])
 
   const handleForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (!roomId || !name) return
+
+    setMessage((prev) => [...prev, {
+      roomId: roomId,
+      message: content,
+      sender: name
+    }])
+
     console.log(content)
     socket.emit("send-message", {
       roomId: roomId,
@@ -63,7 +70,8 @@ const App = () => {
     <div className='h-[calc(100vh-72px)] flex flex-col p-8'>
       <div className="flex-1 overflow-auto p-8">
         {message.map((msg, idx) => {
-          return <Message key={idx} text={msg} />
+          if (!name) return null
+          return <Message key={idx} text={msg} userName={name}/>
         })}
       </div>
       <div className="flex justify-center ">

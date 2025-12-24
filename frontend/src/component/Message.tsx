@@ -5,16 +5,18 @@ interface MessageProps {
   text: {
     roomId: string;
     message: string;
-    sender: string}
+    sender: string
+  },
+  userName: string
 }
 
-const Message = ({ key, text }:MessageProps) => {
+const Message = ({ key, text, userName }:MessageProps) => {
   return (
-    <div className="chat chat-end">
+    <div className={userName === text.sender ? "chat chat-end" : "chat chat-start"}>
       <div className="chat-header">
-        {text.sender}
+        {userName === text.sender ? "you" : text.sender}
       </div>
-      <div className='chat-bubble chat-bubble-accent text-white font-bold text-xl' id={String(key)}>{text.roomId}</div>
+      <div className='chat-bubble chat-bubble-accent text-white font-bold text-xl' id={String(key)}>{text.message}</div>
     </div>
   )
 }
