@@ -1,14 +1,20 @@
 import { ArrowLeft } from 'lucide-react'
 import React, { useRef, useState, useEffect } from 'react'
+import axios from 'axios'
+import { useNavigate } from 'react-router'
+
 
 type Props = {
     setAction: (v: "join" | null) => void;
+    name: string;
 }
 
-const JoinRoom = ({setAction}:Props) => {
+const JoinRoom = ({ setAction, name }: Props) => {
 
     const [roomId, setRoomId] = useState(Array(6).fill(""))
     const inputsRef = useRef<(HTMLInputElement | null)[]>([])
+    const navigate = useNavigate()
+
 
     useEffect(() => {
         inputsRef.current[0]?.focus();
@@ -32,11 +38,36 @@ const JoinRoom = ({setAction}:Props) => {
         }
     }
 
+    const handleSubmit = async () => {
+        const finalRoomId = roomId.join("")
+
+        // if (finalRoomId.length !== 6) {
+        //     alert("Enter a valid 6-digit room ID");
+        //     return;
+        // }
+
+        try {
+            const res = await axios.get(`/api/join-room/${finalRoomId}`)
+            console.log(res.data.roomId)
+
+            if (!res.data.roomId) {
+                alert("room not found")
+                return
+            }
+
+            navigate(`/room/${res.data.roomId}?name=${encodeURIComponent(name)}`)
+        } catch (error) {
+
+        }
+
+
+    }
+
     return (
         <div className='card bg-base-300 max-w-sm m-auto mt-8 shadow-xl'>
-                <button className='btn btn-ghost btn-circle' onClick={()=>{setAction(null)}}>
-                    <ArrowLeft />
-                </button>
+            <button className='btn btn-ghost btn-circle' onClick={() => { setAction(null) }}>
+                <ArrowLeft />
+            </button>
             <div className="card-body">
                 <h2 className="card-title flex justify-center text-3xl mb-8">Join Room</h2>
                 <p className="text-center text-sm opacity-70">
@@ -58,7 +89,7 @@ const JoinRoom = ({setAction}:Props) => {
                     ))}
                 </div>
                 <div className="card-action">
-                    <button className='btn btn-secondary w-full mt-8' onClick={() => { console.log(roomId.join("")) }}>Join</button>
+                    <button className='btn btn-secondary w-full mt-8' onClick={handleSubmit}>Join</button>
                 </div>
             </div>
         </div>
