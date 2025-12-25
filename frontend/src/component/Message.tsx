@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface MessageProps {
   key: number,
   text: {

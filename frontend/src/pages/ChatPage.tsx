@@ -1,4 +1,3 @@
-import React, { type HtmlHTMLAttributes } from 'react'
 import { useEffect, useState } from 'react'
 import Message from '../component/Message'
 import { Send } from 'lucide-react'

@@ -1,6 +1,3 @@
-import React, { useState } from 'react'
-
-
 type Props = {
     name: string;
     setName: (v: string) => void;
@@ -8,8 +5,6 @@ type Props = {
 }
 
 const UserInfo = ({ name, setName, setAction }: Props) => {
-
-
 
     return (
         <div className="card bg-base-300 max-w-2xl mx-auto mb-4 mt-10 shadow-xl">

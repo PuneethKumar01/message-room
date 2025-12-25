@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import UserInfo from '../component/UserInfo'
 import CreateRoom from '../component/CreateRoom'
 import JoinRoom from '../component/JoinRoom'

@@ -9,19 +9,19 @@ declare module "socket.io"{
         roomId?: string;
     }
 }
-
 const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        // "http://localhost:5173","http://localhost:4173"
+        origin:"*",
         methods: ["GET", "POST"]
     }
 });
 
 app.use(cors({
-    origin: ["http://localhost:5173"]
+    origin: "*"
 }))
 
 app.use(express.json())
@@ -50,8 +50,7 @@ app.get("/api/create-room", (_, res) => {
 app.get("/api/join-room/:roomId", (req:express.Request<{roomId: string}>, res) => {
     try {
         let { roomId } = req.params
-        console.log(roomId)
-        // if (!allRoomId.has(roomId)) return res.status(404).json({ "error": "Room not found" })
+        if (!allRoomId.has(roomId)) return res.status(404).json({ "error": "Room not found" })
         res.json({ "roomId": roomId })
     } catch (error) {
         res.status(500).json({ "Error": "Internal server error" })
@@ -68,10 +67,6 @@ io.on('connection', (socket) => {
     console.log("user connected ", socket.id);
 
     socket.on("join-room", (roomId: string) => {
-        // if (!allRoomId.has(roomId)) {
-        //     socket.emit("error", "Invalid room")
-        //     return;
-        // }
         socket.join(roomId);
         socket.data.roomId = roomId
         console.log(`${socket.id} have joined ${roomId}`)

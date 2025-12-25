@@ -2,6 +2,7 @@ import { ArrowLeft } from 'lucide-react'
 import React, { useRef, useState, useEffect } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router'
+import {toast} from 'react-hot-toast'
 
 
 type Props = {
@@ -14,7 +15,6 @@ const JoinRoom = ({ setAction, name }: Props) => {
     const [roomId, setRoomId] = useState(Array(6).fill(""))
     const inputsRef = useRef<(HTMLInputElement | null)[]>([])
     const navigate = useNavigate()
-
 
     useEffect(() => {
         inputsRef.current[0]?.focus();
@@ -41,25 +41,13 @@ const JoinRoom = ({ setAction, name }: Props) => {
     const handleSubmit = async () => {
         const finalRoomId = roomId.join("")
 
-        // if (finalRoomId.length !== 6) {
-        //     alert("Enter a valid 6-digit room ID");
-        //     return;
-        // }
-
+       
         try {
-            // const res = await axios.get(`/api/join-room/${finalRoomId}`)
-            // console.log(res.data.roomId)
-
-            // if (!res.data.roomId) {
-            //     alert("room not found")
-            //     return
-            // }
-
-            navigate(`/room/${finalRoomId}?name=${encodeURIComponent(name)}`)
+            const res = await axios.get(`http://localhost:5001/api/join-room/${finalRoomId}`)
+            navigate(`/room/${res.data.roomId}?name=${encodeURIComponent(name)}`)
         } catch (error) {
-
+            toast.error("Room not found")
         }
-
 
     }
 
@@ -89,7 +77,7 @@ const JoinRoom = ({ setAction, name }: Props) => {
                     ))}
                 </div>
                 <div className="card-action">
-                    <button className='btn btn-secondary w-full mt-8' onClick={handleSubmit}>Join</button>
+                    <button className='btn btn-secondary w-full mt-8' onClick={handleSubmit} disabled={roomId.join('').length !== 6}>Join</button>
                 </div>
             </div>
         </div>
