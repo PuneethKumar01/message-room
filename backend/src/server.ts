@@ -19,13 +19,13 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: process.env.CORS_ORIGIN ,
+        origin: "*" ,
         methods: ["GET", "POST"]
     }
 });
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN
+    origin: "*"
 }))
 
 app.use(express.json())
@@ -114,12 +114,12 @@ io.on('connection', (socket) => {
     })
 })
 
-const __dirname = path.resolve()
-app.use(express.static(path.join(__dirname, "frontend","dist")))
+// const __dirname = path.resolve()
+// app.use(express.static(path.join(__dirname, "frontend","dist")))
 
-app.get("*", (_, res) => {
-    res.sendFile(path.join(__dirname, "frontend","dist", "index.html"))
-})
+// app.get("*", (_, res) => {
+//     res.sendFile(path.join(__dirname, "frontend","dist", "index.html"))
+// })
 
 const PORT = process.env.PORT || 5001
 
