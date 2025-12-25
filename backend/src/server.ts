@@ -8,8 +8,8 @@ import path from 'path'
 
 dotenv.config()
 
-declare module "socket.io"{
-    interface SocketData{
+declare module "socket.io" {
+    interface SocketData {
         roomId?: string;
     }
 }
@@ -19,13 +19,25 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: process.env.CORS_ORIGIN ,
+        origin: [
+            "https://www.puneeth.tech",
+            "https://message-room-eta.vercel.app",
+            "https://message-room-puneeth-kumars-projects-bc9f6a37.vercel.app",
+            "http://localhost:5173",
+            "http://localhost:4173"
+        ],
         methods: ["GET", "POST"]
     }
 });
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN
+    origin: [
+        "https://www.puneeth.tech",
+        "https://message-room-eta.vercel.app",
+        "https://message-room-puneeth-kumars-projects-bc9f6a37.vercel.app",
+        "http://localhost:5173",
+        "http://localhost:4173"
+    ]
 }))
 
 app.use(express.json())
@@ -59,7 +71,7 @@ app.get("/api/create-room", (_, res) => {
     }
 })
 
-app.get("/api/join-room/:roomId", (req:express.Request<{roomId: string}>, res) => {
+app.get("/api/join-room/:roomId", (req: express.Request<{ roomId: string }>, res) => {
     try {
         let { roomId } = req.params
         if (!allRoomId.has(roomId)) return res.status(404).json({ "error": "Room not found" })
@@ -134,3 +146,4 @@ const PORT = process.env.PORT || 5001
 server.listen(PORT, () => {
     console.log(`running on port ${PORT}`)
 })
+388841
