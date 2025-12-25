@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router'
+import api from '../util/axios'
 
 const CreateRoom = ({name}:{name:string}) => {
 
@@ -10,7 +10,7 @@ const CreateRoom = ({name}:{name:string}) => {
   useEffect(() => {
     const createRoom = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/api/create-room")
+        const res = await api.get("/create-room")
         setRoomId(res.data.roomId)
       } catch (err) {
         setRoomId("Failed to create room")
@@ -26,9 +26,7 @@ const CreateRoom = ({name}:{name:string}) => {
   const handleEnterRoom = ()=>{
     if(!RoomId || !name) return;
     navigate(`/room/${RoomId}?name=${encodeURIComponent(name)}`)
-    
   }
-
 
   return (
     <div className='container card bg-base-200 max-w-md mx-auto mt-12'>

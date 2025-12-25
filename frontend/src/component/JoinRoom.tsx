@@ -1,9 +1,8 @@
 import { ArrowLeft } from 'lucide-react'
 import React, { useRef, useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../util/axios'
 import { useNavigate } from 'react-router'
 import {toast} from 'react-hot-toast'
-
 
 type Props = {
     setAction: (v: "join" | null) => void;
@@ -41,14 +40,12 @@ const JoinRoom = ({ setAction, name }: Props) => {
     const handleSubmit = async () => {
         const finalRoomId = roomId.join("")
 
-       
         try {
-            const res = await axios.get(`http://localhost:5001/api/join-room/${finalRoomId}`)
+            const res = await api.get(`/join-room/${finalRoomId}`)
             navigate(`/room/${res.data.roomId}?name=${encodeURIComponent(name)}`)
         } catch (error) {
             toast.error("Room not found")
         }
-
     }
 
     return (

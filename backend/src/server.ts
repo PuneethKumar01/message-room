@@ -3,25 +3,29 @@ import http from 'http'
 import { Server } from 'socket.io'
 import cors from 'cors'
 import "socket.io";
+import dotenv from 'dotenv'
+import path from 'path'
+
+dotenv.config()
 
 declare module "socket.io"{
     interface SocketData{
         roomId?: string;
     }
 }
+
 const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        // "http://localhost:5173","http://localhost:4173"
-        origin:"*",
+        origin: process.env.CORS_ORIGIN ,
         methods: ["GET", "POST"]
     }
 });
 
 app.use(cors({
-    origin: "*"
+    origin: process.env.CORS_ORIGIN
 }))
 
 app.use(express.json())
@@ -110,6 +114,15 @@ io.on('connection', (socket) => {
     })
 })
 
-server.listen(5001, () => {
-    console.log('running on 5001')
+const __dirname = path.resolve()
+app.use(express.static(path.join(__dirname, "frontend","dist")))
+
+app.get("*", (_, res) => {
+    res.sendFile(path.join(__dirname, "frontend","dist", "index.html"))
+})
+
+const PORT = process.env.PORT || 5001
+
+server.listen(PORT, () => {
+    console.log(`running on port ${PORT}`)
 })
