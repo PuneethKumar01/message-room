@@ -19,13 +19,13 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "*" ,
+        origin: process.env.CORS_ORIGIN ,
         methods: ["GET", "POST"]
     }
 });
 
 app.use(cors({
-    origin: "*"
+    origin: process.env.CORS_ORIGIN
 }))
 
 app.use(express.json())
@@ -41,6 +41,14 @@ const generateRoomId = () => {
     return generatedNumber
 
 }
+
+app.get("/", (_, res) => {
+    try {
+        res.json({ "sucess": "server is live" })
+    } catch (error) {
+        res.status(500).json({ "Error": "Internal server error" })
+    }
+})
 
 app.get("/api/create-room", (_, res) => {
     try {
