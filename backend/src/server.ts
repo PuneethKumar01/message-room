@@ -1,10 +1,9 @@
 import express from 'express'
 import http from 'http'
 import { Server } from 'socket.io'
-import cors from 'cors'
 import "socket.io";
+import cors from 'cors'
 import dotenv from 'dotenv'
-import path from 'path'
 
 dotenv.config()
 
@@ -14,35 +13,33 @@ declare module "socket.io" {
     }
 }
 
+const allowedOrigins = [
+    "https://www.puneeth.tech",
+    "https://message-room-eta.vercel.app",
+    "https://message-room-puneeth-kumars-projects-bc9f6a37.vercel.app",
+    "http://localhost:5173",
+    "http://localhost:4173"
+]
+
 const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: [
-            "https://www.puneeth.tech",
-            "https://message-room-eta.vercel.app",
-            "https://message-room-puneeth-kumars-projects-bc9f6a37.vercel.app",
-            "http://localhost:5173",
-            "http://localhost:4173"
-        ],
-        methods: ["GET", "POST"]
+        origin: allowedOrigins,
+        methods: ["GET"]
     }
 });
 
 app.use(cors({
-    origin: [
-        "https://www.puneeth.tech",
-        "https://message-room-eta.vercel.app",
-        "https://message-room-puneeth-kumars-projects-bc9f6a37.vercel.app",
-        "http://localhost:5173",
-        "http://localhost:4173"
-    ]
+    origin: allowedOrigins
 }))
 
 app.use(express.json())
 
+
 const allRoomId = new Set<string>();
+
 const generateRoomId = () => {
     let generatedNumber: string;
     do {
@@ -51,7 +48,6 @@ const generateRoomId = () => {
 
     allRoomId.add(generatedNumber)
     return generatedNumber
-
 }
 
 app.get("/", (_, res) => {
@@ -133,13 +129,6 @@ io.on('connection', (socket) => {
         console.log("user disconnected", socket.id)
     })
 })
-
-// const __dirname = path.resolve()
-// app.use(express.static(path.join(__dirname, "frontend","dist")))
-
-// app.get("*", (_, res) => {
-//     res.sendFile(path.join(__dirname, "frontend","dist", "index.html"))
-// })
 
 const PORT = process.env.PORT || 5001
 

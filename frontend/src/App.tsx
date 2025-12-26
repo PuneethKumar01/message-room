@@ -4,7 +4,6 @@ import HomePage from './pages/HomePage'
 import ChatPage from './pages/ChatPage'
 import Navbar from './component/Navbar'
 
-
 const App = () => {
 
   useEffect(()=>{
